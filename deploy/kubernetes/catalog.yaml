@@ -1,0 +1,53 @@
+# Workload example, NOT a Kubernetes backend for the dashboard.
+# Replace IMAGE_PLACEHOLDER with your published ghcr.io image pinned by digest.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: harbor-catalog
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  progressDeadlineSeconds: 60
+  selector:
+    matchLabels: {app: harbor-catalog}
+  strategy:
+    rollingUpdate: {maxSurge: 1, maxUnavailable: 0}
+  template:
+    metadata:
+      labels: {app: harbor-catalog}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: catalog
+          image: IMAGE_PLACEHOLDER
+          command: [python, -m, harbor.sample, v1]
+          env:
+            - {name: SAMPLE_HOST, value: "0.0.0.0"}
+            - {name: SAMPLE_PORT, value: "8000"}
+          ports: [{containerPort: 8000}]
+          resources:
+            requests: {cpu: 50m, memory: 32Mi}
+            limits: {cpu: 200m, memory: 96Mi}
+          readinessProbe:
+            httpGet: {path: /health, port: 8000}
+            periodSeconds: 2
+          livenessProbe:
+            tcpSocket: {port: 8000}
+            initialDelaySeconds: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-catalog
+spec:
+  selector: {app: harbor-catalog}
+  ports: [{port: 80, targetPort: 8000}]

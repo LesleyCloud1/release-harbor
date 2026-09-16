@@ -1,0 +1,14 @@
+services:
+  harbor:
+    build: .
+    ports:
+      - "127.0.0.1:8088:8088"
+    volumes:
+      - harbor-state:/app/.harbor
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    tmpfs: [/tmp]
+volumes:
+  harbor-state:

@@ -1,0 +1,37 @@
+name: Verify release platform
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.11', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m unittest discover -s tests -v
+      - run: python -m compileall -q harbor
+      - run: node --check harbor/static/app.js
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t release-harbor:test .
+      - name: Exercise container deployment and failure preservation
+        run: |
+          docker run -d --name harbor -p 127.0.0.1:8088:8088 -e HARBOR_TOKEN=ci-only-ephemeral-operator-key release-harbor:test
+          python scripts/smoke.py
+      - if: always()
+        run: docker logs harbor; docker rm -f harbor
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform -chdir=infra/registry fmt -check
+      - run: terraform -chdir=infra/registry init -backend=false
+      - run: terraform -chdir=infra/registry validate

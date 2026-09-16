@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.harbor/
+.env
+.venv/
+.terraform/
+*.tfstate*
+*.tfplan
+*.tfvars
+!*.tfvars.example

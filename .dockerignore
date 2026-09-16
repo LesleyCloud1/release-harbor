@@ -1,0 +1,7 @@
+**/__pycache__
+.harbor
+.git
+.env
+tests
+docs
+infra
