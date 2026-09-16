@@ -94,7 +94,6 @@ The tests run real workloads and HTTP requests: promotion, failed candidate isol
 - [Design decisions and tradeoffs](docs/DECISIONS.md)
 - [Failure and rollback runbook](docs/RUNBOOK.md)
 - [Security boundaries](docs/SECURITY.md)
-- [Three-minute interview demo](docs/DEMO.md)
 - [Verification record](docs/VERIFICATION.md)
 
 ## Next milestones
