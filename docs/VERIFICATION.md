@@ -7,6 +7,14 @@
 - Browser: v1 deployment, v2 deployment, broken-release failure, and rollback to v1 succeeded. History showed three successful operations and one expected failure.
 - Desktop dashboard inspected visually; screenshot captured from the running application.
 
-## Infrastructure
+## Observed in GitHub Actions
 
-Docker, Kubernetes, and Terraform were not installed on the local test machine. Container smoke testing and Terraform validation are configured in GitHub Actions; remote results will be recorded after publication. No AWS resources were created and no Kubernetes cluster was provisioned.
+[Verification run](https://github.com/LesleyCloud1/release-harbor/actions/runs/35060859073) passed:
+
+- All 13 tests on each of Python 3.11, 3.12, and 3.13.
+- Docker image build and live container smoke test: v1 promotion, broken candidate rejection, and v1 continuity.
+- Terraform format, initialization, and configuration validation.
+
+## Not executed
+
+No AWS resources were created. No Kubernetes cluster deployment was attempted. The manual GHCR publish workflow was not run; it is opt-in. Terraform validation checks configuration, not whether a real AWS deployment will succeed with a particular account's permissions and policies.

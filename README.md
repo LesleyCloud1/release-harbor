@@ -1,5 +1,7 @@
 # Release Harbor
 
+[![Verify release platform](https://github.com/LesleyCloud1/release-harbor/actions/workflows/ci.yml/badge.svg)](https://github.com/LesleyCloud1/release-harbor/actions/workflows/ci.yml)
+
 **A deployment control plane that proves a release is healthy before it serves traffic.**
 
 Built by Lesley Cloud to connect application engineering with CI/CD, release operations, and developer tooling. This is an independent portfolio project; it contains no employer code or infrastructure.
